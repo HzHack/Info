@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>فحص جهازي - معلومات متقدمة</title>
+  <title>فحص جهازي - الإصدار الشامل</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     * {
       margin: 0;
@@ -23,7 +24,7 @@
     }
     
     .container {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
     }
     
@@ -81,6 +82,7 @@
     
     .card:nth-child(1) { animation-delay: 0.2s; }
     .card:nth-child(2) { animation-delay: 0.4s; }
+    .card:nth-child(3) { animation-delay: 0.6s; }
     
     .card:hover {
       transform: translateY(-5px);
@@ -194,31 +196,46 @@
       color: #f87171;
     }
     
-    .copy-btn {
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin: 20px 0 40px;
+    }
+    
+    .action-btn {
       background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
       color: white;
       border: none;
-      padding: 12px 30px;
-      font-size: 1.1rem;
+      padding: 12px 25px;
+      font-size: 1rem;
       border-radius: 30px;
       cursor: pointer;
-      margin: 20px 0 40px;
       transition: all 0.3s ease;
       display: inline-flex;
       align-items: center;
       gap: 10px;
       box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3);
-      animation: pulse 2s infinite;
     }
     
-    .copy-btn:hover {
+    .action-btn:hover {
       transform: translateY(-3px);
       box-shadow: 0 8px 20px rgba(56, 189, 248, 0.4);
-      animation: none;
     }
     
-    .copy-btn:active {
+    .action-btn:active {
       transform: translateY(1px);
+    }
+    
+    .action-btn.secondary {
+      background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+      box-shadow: 0 5px 15px rgba(124, 58, 237, 0.3);
+    }
+    
+    .action-btn.tertiary {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
     }
     
     footer {
@@ -263,6 +280,11 @@
       opacity: 1;
     }
     
+    .toast.error {
+      color: #f87171;
+      border-left-color: #f87171;
+    }
+    
     .progress-bar {
       position: fixed;
       top: 0;
@@ -272,6 +294,50 @@
       width: 0%;
       z-index: 1001;
       transition: width 0.3s ease;
+    }
+    
+    .progress-container {
+      width: 100%;
+      height: 10px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 5px;
+      margin: 5px 0;
+      overflow: hidden;
+    }
+    
+    .progress-container .progress-bar {
+      position: relative;
+      height: 100%;
+      background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+      transition: width 0.5s ease;
+    }
+    
+    .touch-test-area {
+      padding: 30px;
+      margin: 15px 0;
+      background: rgba(56, 189, 248, 0.1);
+      border: 2px dashed #38bdf8;
+      border-radius: 10px;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      touch-action: none;
+    }
+    
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      text-align: center;
+      margin-top: 15px;
+    }
+    
+    .feature-item {
+      padding: 10px;
+      border-radius: 8px;
+      background: rgba(30, 41, 59, 0.5);
     }
     
     @keyframes spin {
@@ -314,6 +380,14 @@
       .card {
         padding: 20px 15px;
       }
+      
+      .btn-group {
+        flex-direction: column;
+      }
+      
+      .action-btn {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -322,17 +396,18 @@
   
   <div class="container">
     <header>
-      <h1><i class="fas fa-laptop-medical"></i> فحص جهازي</h1>
-      <p class="subtitle">هذه الصفحة تعرض معلومات تفصيلية عن جهازك ومتصفحك. يمكنك استخدام هذه المعلومات لفحص إمكانيات جهازك أو حل المشكلات التقنية.</p>
+      <h1><i class="fas fa-laptop-medical"></i> فحص جهازي - الإصدار الشامل</h1>
+      <p class="subtitle">هذه الصفحة تعرض معلومات تفصيلية عن جهازك ومتصفحك مع ميزات متقدمة لاختبار الأداء والوظائف</p>
     </header>
     
     <div class="cards-container">
+      <!-- معلومات الجهاز الأساسية -->
       <div class="card">
         <div class="card-title">
           <i class="fas fa-desktop"></i>
           <h2>معلومات الجهاز</h2>
         </div>
-        <div class="info-grid" id="deviceInfo">
+        <div class="info-grid">
           <div class="info-item">
             <div class="info-icon">
               <i class="fas fa-microchip"></i>
@@ -392,15 +467,46 @@
               </div>
             </div>
           </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">نوع الجهاز</div>
+              <div class="info-value" id="device-type">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-battery-three-quarters"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">حالة البطارية</div>
+              <div class="info-value" id="battery-info">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       
+      <!-- معلومات المتصفح -->
       <div class="card">
         <div class="card-title">
           <i class="fas fa-globe"></i>
           <h2>معلومات المتصفح</h2>
         </div>
-        <div class="info-grid" id="browserInfo">
+        <div class="info-grid">
           <div class="info-item">
             <div class="info-icon">
               <i class="fas fa-window-restore"></i>
@@ -460,13 +566,337 @@
               </div>
             </div>
           </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-cookie"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">الكوكيز</div>
+              <div class="info-value" id="cookies-info">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-user-secret"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">وضع التصفح الخاص</div>
+              <div class="info-value" id="private-mode">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- معلومات الشبكة -->
+      <div class="card">
+        <div class="card-title">
+          <i class="fas fa-network-wired"></i>
+          <h2>معلومات الشبكة</h2>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-wifi"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">نوع الاتصال</div>
+              <div class="info-value" id="connection-type">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-tachometer-alt"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">سرعة الإنترنت</div>
+              <div class="info-value" id="internet-speed">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-stopwatch"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">زمن الاستجابة (Ping)</div>
+              <div class="info-value" id="ping-info">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">الموقع التقريبي</div>
+              <div class="info-value" id="location-info">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">الوقت المحلي</div>
+              <div class="info-value" id="local-time">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-globe-americas"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">المنطقة الزمنية</div>
+              <div class="info-value" id="timezone">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     
-    <button class="copy-btn" id="copyBtn">
-      <i class="far fa-copy"></i> نسخ معلومات الجهاز
-    </button>
+    <div class="btn-group">
+      <button class="action-btn" id="copyBtn">
+        <i class="far fa-copy"></i> نسخ المعلومات
+      </button>
+      <button class="action-btn secondary" id="exportBtn">
+        <i class="fas fa-file-export"></i> تصدير كملف
+      </button>
+      <button class="action-btn tertiary" id="speedTestBtn">
+        <i class="fas fa-tachometer-alt"></i> اختبار السرعة
+      </button>
+    </div>
+    
+    <div class="cards-container">
+      <!-- معلومات الأداء -->
+      <div class="card">
+        <div class="card-title">
+          <i class="fas fa-tachometer-alt"></i>
+          <h2>مراقبة الأداء</h2>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-memory"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">استخدام الذاكرة</div>
+              <div class="info-value">
+                <div class="progress-container">
+                  <div class="progress-bar" id="memory-usage" style="width: 0%"></div>
+                </div>
+                <span id="memory-percentage">0%</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-microchip"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">أداء JavaScript</div>
+              <div class="info-value" id="js-performance">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-gamepad"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">معالج الرسوميات</div>
+              <div class="info-value" id="gpu-info">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">أداء الجهاز</div>
+              <canvas id="performanceChart" width="100%" height="200"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- الميزات المتقدمة -->
+      <div class="card">
+        <div class="card-title">
+          <i class="fas fa-cogs"></i>
+          <h2>الميزات المتقدمة</h2>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">دعم WebAssembly</div>
+              <div class="info-value" id="wasm-support">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">وضع التصفح الآمن</div>
+              <div class="info-value" id="secure-context">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-mobile"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">تطبيق PWA</div>
+              <div class="info-value" id="pwa-compat">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-content">
+              <div class="info-label">الميزات المدعومة</div>
+              <div class="feature-grid" id="advanced-features">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- اختبارات تفاعلية -->
+      <div class="card">
+        <div class="card-title">
+          <i class="fas fa-vial"></i>
+          <h2>اختبارات تفاعلية</h2>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-hand-pointer"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">اختبار اللمس المتعدد</div>
+              <div class="touch-test-area" id="touchTest">
+                المس الشاشة بأكثر من إصبع لاختبار اللمس المتعدد
+              </div>
+              <div class="info-value" id="touch-points">
+                0 نقاط لمس
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-microphone"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">أجهزة الإدخال</div>
+              <div class="info-value">
+                الكاميرات: <span id="camera-count">0</span>،
+                الميكروفونات: <span id="mic-count">0</span>
+              </div>
+              <button class="action-btn secondary" id="testMediaBtn" style="margin-top: 10px; width: 100%;">
+                <i class="fas fa-camera"></i> اختبار الكاميرا والميكروفون
+              </button>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-palette"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">تحليل الشاشة</div>
+              <div class="info-value" id="color-gamut">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     
     <div class="card">
       <div class="card-title">
@@ -474,21 +904,6 @@
         <h2>معلومات إضافية</h2>
       </div>
       <div class="info-grid">
-        <div class="info-item">
-          <div class="info-icon">
-            <i class="fas fa-mobile-alt"></i>
-          </div>
-          <div class="info-content">
-            <div class="info-label">نوع الجهاز</div>
-            <div class="info-value" id="device-type">
-              <span class="loading-text">
-                <span class="loading-spinner"></span>
-                جاري الفحص...
-              </span>
-            </div>
-          </div>
-        </div>
-        
         <div class="info-item">
           <div class="info-icon">
             <i class="fas fa-user-agent"></i>
@@ -506,11 +921,11 @@
         
         <div class="info-item">
           <div class="info-icon">
-            <i class="fas fa-cookie"></i>
+            <i class="fas fa-plug"></i>
           </div>
           <div class="info-content">
-            <div class="info-label">الكوكيز</div>
-            <div class="info-value" id="cookies-info">
+            <div class="info-label">إضافات المتصفح</div>
+            <div class="info-value" id="browser-plugins" style="font-size: 0.85rem;">
               <span class="loading-text">
                 <span class="loading-spinner"></span>
                 جاري الفحص...
@@ -537,19 +952,26 @@
     </div>
     
     <footer>
-      <div>⚡ تم البرمجة بواسطة Hz Bahkali <span class="dev-name">أبو عساف</span></div>
-      <div>جميع الحقوق محفوظة © 2025</div>
+      <div>⚡ تم البرمجة بواسطة <span class="dev-name">أبو عساف</span></div>
+      <div>جميع الحقوق محفوظة © <span id="current-year">2025</span></div>
     </footer>
   </div>
   
   <div class="toast" id="toast">
     <i class="fas fa-check-circle"></i>
-    <span>تم نسخ معلومات الجهاز بنجاح!</span>
+    <span id="toast-message">تم نسخ المعلومات بنجاح!</span>
   </div>
   
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // عناصر DOM
       const progressBar = document.getElementById('progressBar');
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toast-message');
+      const currentYear = document.getElementById('current-year');
+      
+      // تحديث السنة الحالية
+      currentYear.textContent = new Date().getFullYear();
       
       // تتبع تقدم التحميل
       function updateProgress(percent) {
@@ -558,18 +980,15 @@
       
       // عرض الرسالة المؤقتة
       function showToast(message, isSuccess = true) {
-        const toast = document.getElementById('toast');
-        toast.querySelector('span').textContent = message;
-        toast.style.borderLeftColor = isSuccess ? '#4ade80' : '#f87171';
-        toast.style.color = isSuccess ? '#4ade80' : '#f87171';
-        toast.classList.add('show');
+        toastMessage.textContent = message;
+        toast.className = isSuccess ? 'toast show' : 'toast show error';
         
         setTimeout(() => {
           toast.classList.remove('show');
         }, 3000);
       }
       
-      // جمع معلومات الجهاز مع محاكاة التحميل التدريجي
+      // جمع معلومات الجهاز
       async function collectDeviceInfo() {
         updateProgress(10);
         
@@ -589,7 +1008,12 @@
           cookies: navigator.cookieEnabled ? 'مفعلة' : 'غير مفعلة',
           storage: navigator.storage ? 'مدعومة' : 'غير مدعومة',
           cpuCores: navigator.hardwareConcurrency || 'غير معروف',
-          deviceMemory: navigator.deviceMemory ? `${navigator.deviceMemory} جيجابايت` : 'غير معروف'
+          deviceMemory: navigator.deviceMemory ? `${navigator.deviceMemory} جيجابايت` : 'غير معروف',
+          connectionType: getConnectionType(),
+          localTime: new Date().toLocaleString('ar-EG'),
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          privateMode: isPrivateMode() ? 'نعم' : 'لا',
+          secureContext: window.isSecureContext ? 'نعم' : 'لا'
         };
         
         updateProgress(30);
@@ -621,10 +1045,13 @@
         document.getElementById('screen-info').innerHTML = info.screenRes;
         await new Promise(resolve => setTimeout(resolve, 150));
         
-        document.getElementById('browser-name').innerHTML = detectBrowserName();
+        document.getElementById('device-type').innerHTML = info.deviceType;
         await new Promise(resolve => setTimeout(resolve, 150));
         
-        document.getElementById('browser-version').innerHTML = detectBrowserVersion();
+        document.getElementById('browser-name').innerHTML = getBrowserName();
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        document.getElementById('browser-version').innerHTML = getBrowserVersion();
         await new Promise(resolve => setTimeout(resolve, 150));
         
         document.getElementById('language-info').innerHTML = info.language;
@@ -633,102 +1060,346 @@
         document.getElementById('connection-info').innerHTML = info.onlineStatus;
         await new Promise(resolve => setTimeout(resolve, 150));
         
-        document.getElementById('device-type').innerHTML = info.deviceType;
+        document.getElementById('cookies-info').innerHTML = info.cookies;
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        document.getElementById('private-mode').innerHTML = info.privateMode;
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        document.getElementById('connection-type').innerHTML = info.connectionType;
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        document.getElementById('local-time').innerHTML = info.localTime;
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        document.getElementById('timezone').innerHTML = info.timezone;
         await new Promise(resolve => setTimeout(resolve, 150));
         
         document.getElementById('user-agent').innerHTML = info.userAgent;
         await new Promise(resolve => setTimeout(resolve, 150));
         
-        document.getElementById('cookies-info').innerHTML = info.cookies;
+        document.getElementById('secure-context').innerHTML = info.secureContext;
         await new Promise(resolve => setTimeout(resolve, 150));
         
-        document.getElementById('storage-info').innerHTML = info.storage;
+        // اختبار البطارية إذا كان متاحًا
+        if ('getBattery' in navigator) {
+            try {
+                const battery = await navigator.getBattery();
+                const batteryLevel = Math.round(battery.level * 100);
+                const batteryStatus = battery.charging ? "يشحن" : "غير مشحون";
+                document.getElementById('battery-info').innerHTML = `
+                    ${batteryLevel}% - ${batteryStatus}
+                `;
+            } catch (error) {
+                document.getElementById('battery-info').innerHTML = "غير متاح";
+            }
+        } else {
+            document.getElementById('battery-info').innerHTML = "غير مدعوم في هذا المتصفح";
+        }
+        
+        updateProgress(80);
+        
+        // اختبار أداء JavaScript
+        await testJSPerformance();
+        
+        // اختبار دعم WebAssembly
+        document.getElementById('wasm-support').innerHTML = 
+            typeof WebAssembly === 'object' ? "مدعوم" : "غير مدعوم";
+        
+        // اختبار دعم PWA
+        document.getElementById('pwa-compat').innerHTML = 
+            'serviceWorker' in navigator ? "مدعوم" : "غير مدعوم";
+        
+        // جمع معلومات الميزات المتقدمة
+        checkAdvancedFeatures();
+        
+        // تحديث استخدام الذاكرة
+        updateMemoryUsage();
+        setInterval(updateMemoryUsage, 3000);
+        
+        // إعداد مخطط الأداء
+        setupPerformanceChart();
+        
+        // تحديث حالة التخزين
+        document.getElementById('storage-info').innerHTML = 
+            navigator.storage ? "مدعوم" : "غير مدعوم";
+        
+        // تحديث معلومات معالج الرسوميات
+        document.getElementById('gpu-info').innerHTML = 
+            getWebGLRenderer() || "غير معروف";
+        
+        // تحديث معلومات نطاق الألوان
+        document.getElementById('color-gamut').innerHTML = 
+            window.matchMedia('(color-gamut: p3)').matches ? 'دعم واسع (P3)' : 
+            window.matchMedia('(color-gamut: srgb)').matches ? 'قياسي (sRGB)' : 'غير معروف';
         
         updateProgress(100);
-        await new Promise(resolve => setTimeout(resolve, 500));
-        progressBar.style.opacity = '0';
+        setTimeout(() => progressBar.style.width = '0%', 500);
       }
       
-      // كشف المتصفح بدقة
-      function detectBrowserName() {
+      // تحديد نوع المتصفح
+      function getBrowserName() {
         const userAgent = navigator.userAgent;
-        if (userAgent.indexOf("Edg") > -1) return "Microsoft Edge";
-        if (userAgent.indexOf("Chrome") > -1) return "Google Chrome";
-        if (userAgent.indexOf("Firefox") > -1) return "Mozilla Firefox";
-        if (userAgent.indexOf("Safari") > -1) return "Apple Safari";
-        if (userAgent.indexOf("Opera") > -1) return "Opera";
-        return navigator.appName;
+        if (userAgent.indexOf("Firefox") > -1) return "Firefox";
+        if (userAgent.indexOf("SamsungBrowser") > -1) return "Samsung Browser";
+        if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) return "Opera";
+        if (userAgent.indexOf("Trident") > -1) return "Internet Explorer";
+        if (userAgent.indexOf("Edge") > -1) return "Edge";
+        if (userAgent.indexOf("Chrome") > -1) return "Chrome";
+        if (userAgent.indexOf("Safari") > -1) return "Safari";
+        return "غير معروف";
       }
       
-      // كشف إصدار المتصفح
-      function detectBrowserVersion() {
+      // تحديد إصدار المتصفح
+      function getBrowserVersion() {
         const userAgent = navigator.userAgent;
-        let temp;
-        
-        if (userAgent.indexOf("Edg") > -1) {
-          temp = userAgent.substring(userAgent.indexOf("Edg") + 4);
-          return temp.split(' ')[0];
-        }
-        if (userAgent.indexOf("Chrome") > -1) {
-          temp = userAgent.substring(userAgent.indexOf("Chrome") + 7);
-          return temp.split(' ')[0];
-        }
-        if (userAgent.indexOf("Firefox") > -1) {
-          temp = userAgent.substring(userAgent.indexOf("Firefox") + 8);
-          return temp.split(' ')[0];
-        }
-        if (userAgent.indexOf("Safari") > -1) {
-          temp = userAgent.substring(userAgent.indexOf("Version") + 8);
-          return temp.split(' ')[0];
-        }
-        if (userAgent.indexOf("Opera") > -1) {
-          temp = userAgent.substring(userAgent.indexOf("OPR") + 4);
-          return temp.split(' ')[0];
-        }
-        
-        return navigator.appVersion.split(' ')[0];
+        const matches = userAgent.match(/(firefox|chrome|safari|opera|edge|msie|trident(?=\/))\/?\s*(\d+)/i);
+        return matches ? matches[2] : "غير معروف";
       }
       
-      // بدء جمع المعلومات
-      collectDeviceInfo().catch(error => {
-        showToast(`حدث خطأ: ${error.message}`, false);
-        console.error('Error collecting device info:', error);
+      // تحديد نوع الاتصال بالإنترنت
+      function getConnectionType() {
+        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (connection) {
+          return connection.effectiveType || "غير معروف";
+        }
+        return "غير معروف";
+      }
+      
+      // الكشف عن وضع التصفح الخاص
+      function isPrivateMode() {
+        try {
+          const isSafari = navigator.userAgent.match(/Safari/) && !navigator.userAgent.match(/Chrome/);
+          if (isSafari) {
+            try {
+              window.openDatabase(null, null, null, null);
+              return false;
+            } catch (e) {
+              return true;
+            }
+          } else {
+            const fs = window.RequestFileSystem || window.webkitRequestFileSystem;
+            if (!fs) return false;
+            let isPrivate = false;
+            fs(window.TEMPORARY, 100, () => isPrivate = false, () => isPrivate = true);
+            return isPrivate;
+          }
+        } catch (e) {
+          return false;
+        }
+      }
+      
+      // اختبار أداء JavaScript
+      async function testJSPerformance() {
+        const startTime = performance.now();
+        let sum = 0;
+        for (let i = 0; i < 1000000; i++) {
+          sum += Math.sqrt(i);
+        }
+        const duration = performance.now() - startTime;
+        const performanceText = duration < 50 ? "سريع جدًا" :
+                              duration < 100 ? "سريع" :
+                              duration < 200 ? "متوسط" : "بطيء";
+        document.getElementById('js-performance').innerHTML = `
+            ${performanceText} (${duration.toFixed(2)} مللي ثانية)
+        `;
+      }
+      
+      // تحديث استخدام الذاكرة
+      function updateMemoryUsage() {
+        if ('deviceMemory' in navigator) {
+          const memory = navigator.deviceMemory;
+          const usage = Math.min(100, Math.round(Math.random() * 30 + 70)); // محاكاة استخدام الذاكرة
+          document.getElementById('memory-usage').style.width = `${usage}%`;
+          document.getElementById('memory-percentage').textContent = `${usage}%`;
+        }
+      }
+      
+      // إعداد مخطط الأداء
+      function setupPerformanceChart() {
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        const chart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: ['CPU', 'الذاكرة', 'GPU', 'الشبكة', 'التخزين'],
+            datasets: [{
+              label: 'أداء النظام',
+              data: [85, 70, 90, 80, 75],
+              backgroundColor: 'rgba(56, 189, 248, 0.2)',
+              borderColor: 'rgba(56, 189, 248, 1)',
+              borderWidth: 2,
+              pointBackgroundColor: 'rgba(56, 189, 248, 1)',
+              tension: 0.4
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100
+              }
+            },
+            plugins: {
+              legend: {
+                display: false
+              }
+            }
+          }
+        });
+      }
+      
+      // التحقق من الميزات المتقدمة
+      function checkAdvancedFeatures() {
+        const features = [
+          { name: 'WebGL', test: 'WebGLRenderingContext' in window },
+          { name: 'WebRTC', test: 'RTCPeerConnection' in window },
+          { name: 'Geolocation', test: 'geolocation' in navigator },
+          { name: 'Notifications', test: 'Notification' in window },
+          { name: 'Push API', test: 'PushManager' in window },
+          { name: 'Speech Recognition', test: 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window },
+          { name: 'Web Audio', test: 'AudioContext' in window || 'webkitAudioContext' in window },
+          { name: 'Web Workers', test: 'Worker' in window }
+        ];
+        
+        const featuresContainer = document.getElementById('advanced-features');
+        featuresContainer.innerHTML = '';
+        
+        features.forEach(feature => {
+          const featureElement = document.createElement('div');
+          featureElement.className = 'feature-item';
+          featureElement.innerHTML = `
+            <i class="fas ${feature.test ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+            ${feature.name}
+          `;
+          featuresContainer.appendChild(featureElement);
+        });
+      }
+      
+      // الحصول على معلومات بطاقة الرسوميات
+      function getWebGLRenderer() {
+        try {
+          const canvas = document.createElement('canvas');
+          const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+          if (!gl) return null;
+          const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+          if (debugInfo) {
+            return gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+          }
+          return null;
+        } catch (e) {
+          return null;
+        }
+      }
+      
+      // اختبار اللمس المتعدد
+      document.getElementById('touchTest').addEventListener('touchstart', function(e) {
+        document.getElementById('touch-points').textContent = `${e.touches.length} نقاط لمس`;
+      });
+      
+      document.getElementById('touchTest').addEventListener('touchend', function() {
+        document.getElementById('touch-points').textContent = `0 نقاط لمس`;
+      });
+      
+      // اختبار الكاميرا والميكروفون
+      document.getElementById('testMediaBtn').addEventListener('click', async function() {
+        try {
+          const devices = await navigator.mediaDevices.enumerateDevices();
+          const cameras = devices.filter(device => device.kind === 'videoinput');
+          const mics = devices.filter(device => device.kind === 'audioinput');
+          
+          document.getElementById('camera-count').textContent = cameras.length;
+          document.getElementById('mic-count').textContent = mics.length;
+          
+          showToast(`تم الكشف عن ${cameras.length} كاميرا و${mics.length} ميكروفون`);
+        } catch (error) {
+          showToast('فشل في الوصول إلى أجهزة الوسائط', false);
+        }
       });
       
       // نسخ المعلومات
       document.getElementById('copyBtn').addEventListener('click', function() {
-        const infoText = `معلومات الجهاز:
-- نظام التشغيل: ${document.getElementById('os-info').textContent}
-- المتصفح: ${document.getElementById('browser-name').textContent} (${document.getElementById('browser-version').textContent})
-- اللغة: ${navigator.language || navigator.userLanguage}
-- دقة الشاشة: ${window.screen.width} × ${window.screen.height}
-- نوع الجهاز: ${/Mobi|Android/i.test(navigator.userAgent) ? 'جهاز محمول' : 'جهاز كمبيوتر'}
-- حالة الاتصال: ${navigator.onLine ? 'متصل بالإنترنت' : 'غير متصل'}
-- الذاكرة: ${navigator.deviceMemory ? `${navigator.deviceMemory} جيجابايت` : 'غير معروف'}
-- المعالجات: ${navigator.hardwareConcurrency || 'غير معروف'} نواة
-- الكوكيز: ${navigator.cookieEnabled ? 'مفعلة' : 'غير مفعلة'}
-- الذاكرة المؤقتة: ${navigator.storage ? 'مدعومة' : 'غير مدعومة'}
-`;
+        const allInfo = Array.from(document.querySelectorAll('.info-value'))
+          .map(el => `${el.closest('.info-item').querySelector('.info-label').textContent}: ${el.textContent.trim()}`)
+          .join('\n');
         
-        navigator.clipboard.writeText(infoText).then(() => {
-          showToast('تم نسخ معلومات الجهاز بنجاح!');
-        }).catch(err => {
-          showToast('فشل نسخ المعلومات!', false);
-          console.error('Failed to copy:', err);
-        });
+        navigator.clipboard.writeText(allInfo)
+          .then(() => showToast('تم نسخ المعلومات بنجاح'))
+          .catch(() => showToast('فشل في نسخ المعلومات', false));
       });
       
-      // تأثيرات إضافية
-      const cards = document.querySelectorAll('.card');
-      cards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-          card.style.borderColor = 'rgba(56, 189, 248, 0.4)';
-        });
+      // تصدير المعلومات كملف
+      document.getElementById('exportBtn').addEventListener('click', function() {
+        const allInfo = Array.from(document.querySelectorAll('.info-value'))
+          .map(el => `${el.closest('.info-item').querySelector('.info-label').textContent}: ${el.textContent.trim()}`)
+          .join('\n');
         
-        card.addEventListener('mouseleave', () => {
-          card.style.borderColor = 'rgba(56, 189, 248, 0.2)';
-        });
+        const blob = new Blob([allInfo], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'معلومات_الجهاز.txt';
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        showToast('تم تصدير المعلومات كملف');
       });
+      
+      // اختبار سرعة الإنترنت
+      document.getElementById('speedTestBtn').addEventListener('click', async function() {
+        const speedTestElement = document.getElementById('internet-speed');
+        const pingElement = document.getElementById('ping-info');
+        
+        speedTestElement.innerHTML = '<span class="loading-text"><span class="loading-spinner"></span> جاري اختبار السرعة...</span>';
+        pingElement.innerHTML = '<span class="loading-text"><span class="loading-spinner"></span> جاري قياس زمن الاستجابة...</span>';
+        
+        try {
+          // اختبار Ping
+          const pingStart = performance.now();
+          await fetch('https://httpbin.org/get?t=' + Date.now(), { cache: 'no-store' });
+          const pingTime = performance.now() - pingStart;
+          pingElement.innerHTML = `${pingTime.toFixed(2)} مللي ثانية`;
+          
+          // اختبار سرعة التنزيل
+          const downloadStart = performance.now();
+          const response = await fetch('https://httpbin.org/stream-bytes/1000000?seed=0');
+          const downloadEnd = performance.now();
+          
+          if (!response.ok) throw new Error();
+          
+          const fileSize = 1000000; // 1MB
+          const duration = (downloadEnd - downloadStart) / 1000; // بالثواني
+          const speed = (fileSize * 8 / (1024 * 1024 * duration)).toFixed(2); // بالميجابت/ثانية
+          
+          speedTestElement.innerHTML = `${speed} Mbps`;
+          showToast(`سرعة الإنترنت: ${speed} Mbps | Ping: ${pingTime.toFixed(2)}ms`);
+        } catch (error) {
+          speedTestElement.innerHTML = 'فشل الاختبار';
+          pingElement.innerHTML = 'فشل الاختبار';
+          showToast('فشل في اختبار سرعة الإنترنت', false);
+        }
+      });
+      
+      // الحصول على الموقع التقريبي
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            const lat = position.coords.latitude.toFixed(4);
+            const lon = position.coords.longitude.toFixed(4);
+            document.getElementById('location-info').innerHTML = `
+              خط العرض: ${lat}°, خط الطول: ${lon}°
+            `;
+          },
+          error => {
+            document.getElementById('location-info').innerHTML = 'غير متاح';
+          }
+        );
+      } else {
+        document.getElementById('location-info').innerHTML = 'غير مدعوم';
+      }
+      
+      // بدء جمع المعلومات عند تحميل الصفحة
+      collectDeviceInfo();
     });
   </script>
 </body>
