@@ -19,6 +19,7 @@
       min-height: 100vh;
       padding: 20px;
       text-align: center;
+      overflow-x: hidden;
     }
     
     .container {
@@ -29,6 +30,7 @@
     header {
       margin: 30px 0;
       position: relative;
+      animation: fadeInDown 0.8s ease;
     }
     
     h1 {
@@ -72,7 +74,13 @@
       backdrop-filter: blur(10px);
       border: 1px solid rgba(56, 189, 248, 0.2);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeInUp 0.5s ease forwards;
+      opacity: 0;
+      transform: translateY(20px);
     }
+    
+    .card:nth-child(1) { animation-delay: 0.2s; }
+    .card:nth-child(2) { animation-delay: 0.4s; }
     
     .card:hover {
       transform: translateY(-5px);
@@ -128,6 +136,25 @@
     .info-value {
       color: #f8fafc;
       font-size: 1.05rem;
+      min-height: 24px;
+    }
+    
+    .loading-text {
+      color: #94a3b8;
+      font-style: italic;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 3px solid rgba(56, 189, 248, 0.3);
+      border-radius: 50%;
+      border-top-color: #38bdf8;
+      animation: spin 1s linear infinite;
     }
     
     .device-type {
@@ -181,11 +208,13 @@
       align-items: center;
       gap: 10px;
       box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3);
+      animation: pulse 2s infinite;
     }
     
     .copy-btn:hover {
       transform: translateY(-3px);
       box-shadow: 0 8px 20px rgba(56, 189, 248, 0.4);
+      animation: none;
     }
     
     .copy-btn:active {
@@ -226,11 +255,55 @@
       opacity: 0;
       transition: all 0.3s ease;
       border-left: 4px solid #4ade80;
+      z-index: 1000;
     }
     
     .toast.show {
       transform: translateY(0);
       opacity: 1;
+    }
+    
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      background: #38bdf8;
+      width: 0%;
+      z-index: 1001;
+      transition: width 0.3s ease;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
     }
     
     @media (max-width: 600px) {
@@ -245,6 +318,8 @@
   </style>
 </head>
 <body>
+  <div class="progress-bar" id="progressBar"></div>
+  
   <div class="container">
     <header>
       <h1><i class="fas fa-laptop-medical"></i> فحص جهازي</h1>
@@ -264,7 +339,12 @@
             </div>
             <div class="info-content">
               <div class="info-label">نظام التشغيل</div>
-              <div class="info-value" id="os-info">جاري الفحص...</div>
+              <div class="info-value" id="os-info">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
             </div>
           </div>
           
@@ -274,7 +354,12 @@
             </div>
             <div class="info-content">
               <div class="info-label">الذاكرة</div>
-              <div class="info-value" id="memory-info">جاري الفحص...</div>
+              <div class="info-value" id="memory-info">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
             </div>
           </div>
           
@@ -284,7 +369,12 @@
             </div>
             <div class="info-content">
               <div class="info-label">المعالجات</div>
-              <div class="info-value" id="cpu-info">جاري الفحص...</div>
+              <div class="info-value" id="cpu-info">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
             </div>
           </div>
           
@@ -294,7 +384,12 @@
             </div>
             <div class="info-content">
               <div class="info-label">دقة الشاشة</div>
-              <div class="info-value" id="screen-info">جاري الفحص...</div>
+              <div class="info-value" id="screen-info">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -312,7 +407,12 @@
             </div>
             <div class="info-content">
               <div class="info-label">المتصفح</div>
-              <div class="info-value" id="browser-name">جاري الفحص...</div>
+              <div class="info-value" id="browser-name">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
             </div>
           </div>
           
@@ -322,7 +422,12 @@
             </div>
             <div class="info-content">
               <div class="info-label">إصدار المتصفح</div>
-              <div class="info-value" id="browser-version">جاري الفحص...</div>
+              <div class="info-value" id="browser-version">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
             </div>
           </div>
           
@@ -332,7 +437,12 @@
             </div>
             <div class="info-content">
               <div class="info-label">اللغة</div>
-              <div class="info-value" id="language-info">جاري الفحص...</div>
+              <div class="info-value" id="language-info">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
             </div>
           </div>
           
@@ -342,7 +452,12 @@
             </div>
             <div class="info-content">
               <div class="info-label">حالة الاتصال</div>
-              <div class="info-value" id="connection-info">جاري الفحص...</div>
+              <div class="info-value" id="connection-info">
+                <span class="loading-text">
+                  <span class="loading-spinner"></span>
+                  جاري الفحص...
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -365,7 +480,12 @@
           </div>
           <div class="info-content">
             <div class="info-label">نوع الجهاز</div>
-            <div class="info-value" id="device-type">جاري الفحص...</div>
+            <div class="info-value" id="device-type">
+              <span class="loading-text">
+                <span class="loading-spinner"></span>
+                جاري الفحص...
+              </span>
+            </div>
           </div>
         </div>
         
@@ -375,7 +495,12 @@
           </div>
           <div class="info-content">
             <div class="info-label">تفاصيل المتصفح</div>
-            <div class="info-value" id="user-agent" style="font-size: 0.85rem; word-break: break-word;">جاري الفحص...</div>
+            <div class="info-value" id="user-agent" style="font-size: 0.85rem; word-break: break-word;">
+              <span class="loading-text">
+                <span class="loading-spinner"></span>
+                جاري الفحص...
+              </span>
+            </div>
           </div>
         </div>
         
@@ -385,7 +510,12 @@
           </div>
           <div class="info-content">
             <div class="info-label">الكوكيز</div>
-            <div class="info-value" id="cookies-info">جاري الفحص...</div>
+            <div class="info-value" id="cookies-info">
+              <span class="loading-text">
+                <span class="loading-spinner"></span>
+                جاري الفحص...
+              </span>
+            </div>
           </div>
         </div>
         
@@ -395,15 +525,20 @@
           </div>
           <div class="info-content">
             <div class="info-label">الذاكرة المؤقتة</div>
-            <div class="info-value" id="storage-info">جاري الفحص...</div>
+            <div class="info-value" id="storage-info">
+              <span class="loading-text">
+                <span class="loading-spinner"></span>
+                جاري الفحص...
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </div>
     
     <footer>
-      <div>⚡Hz Bahkali تم البرمجة بواسطة <span class="dev-name">أبو عساف</span></div>
-      <div>جميع الحقوق محفوظة © 2025</div>
+      <div>⚡ تم البرمجة بواسطة <span class="dev-name">أبو عساف</span></div>
+      <div>جميع الحقوق محفوظة © 2023</div>
     </footer>
   </div>
   
@@ -414,72 +549,172 @@
   
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // جمع معلومات الجهاز
-      const deviceInfo = {
-        os: navigator.platform,
-        browserName: navigator.appName,
-        browserVersion: navigator.appVersion,
-        language: navigator.language || navigator.userLanguage,
-        screenRes: `${window.screen.width} × ${window.screen.height}`,
-        deviceType: /Mobi|Android/i.test(navigator.userAgent) ? 
-          '<span class="device-type mobile"><i class="fas fa-mobile-alt"></i> جهاز محمول</span>' : 
-          '<span class="device-type desktop"><i class="fas fa-desktop"></i> جهاز كمبيوتر</span>',
-        onlineStatus: navigator.onLine ? 
-          '<span class="status-badge online"><i class="fas fa-wifi"></i> متصل بالإنترنت</span>' : 
-          '<span class="status-badge offline"><i class="fas fa-plug"></i> غير متصل</span>',
-        userAgent: navigator.userAgent,
-        cookies: navigator.cookieEnabled ? 'مفعلة' : 'غير مفعلة',
-        storage: navigator.storage ? 'مدعومة' : 'غير مدعومة',
-        cpuCores: navigator.hardwareConcurrency || 'غير معروف',
-        deviceMemory: navigator.deviceMemory ? `${navigator.deviceMemory} جيجابايت` : 'غير معروف'
-      };
+      const progressBar = document.getElementById('progressBar');
       
-      // تحديد نظام التشغيل
-      let osName = 'غير معروف';
-      const ua = navigator.userAgent;
+      // تتبع تقدم التحميل
+      function updateProgress(percent) {
+        progressBar.style.width = percent + '%';
+      }
       
-      if (ua.indexOf("Win") !== -1) osName = "Windows";
-      if (ua.indexOf("Mac") !== -1) osName = "MacOS";
-      if (ua.indexOf("Linux") !== -1) osName = "Linux";
-      if (ua.indexOf("Android") !== -1) osName = "Android";
-      if (ua.indexOf("like Mac") !== -1) osName = "iOS";
+      // عرض الرسالة المؤقتة
+      function showToast(message, isSuccess = true) {
+        const toast = document.getElementById('toast');
+        toast.querySelector('span').textContent = message;
+        toast.style.borderLeftColor = isSuccess ? '#4ade80' : '#f87171';
+        toast.style.color = isSuccess ? '#4ade80' : '#f87171';
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      }
       
-      // تحديث واجهة المستخدم بالمعلومات
-      document.getElementById('os-info').innerHTML = osName;
-      document.getElementById('memory-info').innerHTML = deviceMemory;
-      document.getElementById('cpu-info').innerHTML = deviceInfo.cpuCores + " نواة";
-      document.getElementById('screen-info').innerHTML = deviceInfo.screenRes;
-      document.getElementById('browser-name').innerHTML = deviceInfo.browserName;
-      document.getElementById('browser-version').innerHTML = deviceInfo.browserVersion.split(' ')[0];
-      document.getElementById('language-info').innerHTML = deviceInfo.language;
-      document.getElementById('connection-info').innerHTML = deviceInfo.onlineStatus;
-      document.getElementById('device-type').innerHTML = deviceInfo.deviceType;
-      document.getElementById('user-agent').innerHTML = deviceInfo.userAgent;
-      document.getElementById('cookies-info').innerHTML = deviceInfo.cookies;
-      document.getElementById('storage-info').innerHTML = deviceInfo.storage;
+      // جمع معلومات الجهاز مع محاكاة التحميل التدريجي
+      async function collectDeviceInfo() {
+        updateProgress(10);
+        
+        const info = {
+          os: navigator.platform,
+          browserName: navigator.appName,
+          browserVersion: navigator.appVersion,
+          language: navigator.language || navigator.userLanguage,
+          screenRes: `${window.screen.width} × ${window.screen.height}`,
+          deviceType: /Mobi|Android/i.test(navigator.userAgent) ? 
+            '<span class="device-type mobile"><i class="fas fa-mobile-alt"></i> جهاز محمول</span>' : 
+            '<span class="device-type desktop"><i class="fas fa-desktop"></i> جهاز كمبيوتر</span>',
+          onlineStatus: navigator.onLine ? 
+            '<span class="status-badge online"><i class="fas fa-wifi"></i> متصل بالإنترنت</span>' : 
+            '<span class="status-badge offline"><i class="fas fa-plug"></i> غير متصل</span>',
+          userAgent: navigator.userAgent,
+          cookies: navigator.cookieEnabled ? 'مفعلة' : 'غير مفعلة',
+          storage: navigator.storage ? 'مدعومة' : 'غير مدعومة',
+          cpuCores: navigator.hardwareConcurrency || 'غير معروف',
+          deviceMemory: navigator.deviceMemory ? `${navigator.deviceMemory} جيجابايت` : 'غير معروف'
+        };
+        
+        updateProgress(30);
+        
+        // تحديد نظام التشغيل بدقة
+        let osName = 'غير معروف';
+        const ua = navigator.userAgent;
+        
+        if (ua.indexOf("Win") !== -1) osName = "Windows";
+        if (ua.indexOf("Mac") !== -1) osName = "MacOS";
+        if (ua.indexOf("Linux") !== -1) osName = "Linux";
+        if (ua.indexOf("Android") !== -1) osName = "Android";
+        if (ua.indexOf("like Mac") !== -1) osName = "iOS";
+        
+        // محاكاة التأخير لإظهار عملية التحميل
+        await new Promise(resolve => setTimeout(resolve, 800));
+        updateProgress(60);
+        
+        // تحديث الواجهة بالمعلومات
+        document.getElementById('os-info').innerHTML = osName;
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        document.getElementById('memory-info').innerHTML = info.deviceMemory;
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        document.getElementById('cpu-info').innerHTML = info.cpuCores + " نواة";
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        document.getElementById('screen-info').innerHTML = info.screenRes;
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        document.getElementById('browser-name').innerHTML = detectBrowserName();
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        document.getElementById('browser-version').innerHTML = detectBrowserVersion();
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        document.getElementById('language-info').innerHTML = info.language;
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        document.getElementById('connection-info').innerHTML = info.onlineStatus;
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        document.getElementById('device-type').innerHTML = info.deviceType;
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        document.getElementById('user-agent').innerHTML = info.userAgent;
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        document.getElementById('cookies-info').innerHTML = info.cookies;
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        document.getElementById('storage-info').innerHTML = info.storage;
+        
+        updateProgress(100);
+        await new Promise(resolve => setTimeout(resolve, 500));
+        progressBar.style.opacity = '0';
+      }
+      
+      // كشف المتصفح بدقة
+      function detectBrowserName() {
+        const userAgent = navigator.userAgent;
+        if (userAgent.indexOf("Edg") > -1) return "Microsoft Edge";
+        if (userAgent.indexOf("Chrome") > -1) return "Google Chrome";
+        if (userAgent.indexOf("Firefox") > -1) return "Mozilla Firefox";
+        if (userAgent.indexOf("Safari") > -1) return "Apple Safari";
+        if (userAgent.indexOf("Opera") > -1) return "Opera";
+        return navigator.appName;
+      }
+      
+      // كشف إصدار المتصفح
+      function detectBrowserVersion() {
+        const userAgent = navigator.userAgent;
+        let temp;
+        
+        if (userAgent.indexOf("Edg") > -1) {
+          temp = userAgent.substring(userAgent.indexOf("Edg") + 4);
+          return temp.split(' ')[0];
+        }
+        if (userAgent.indexOf("Chrome") > -1) {
+          temp = userAgent.substring(userAgent.indexOf("Chrome") + 7);
+          return temp.split(' ')[0];
+        }
+        if (userAgent.indexOf("Firefox") > -1) {
+          temp = userAgent.substring(userAgent.indexOf("Firefox") + 8);
+          return temp.split(' ')[0];
+        }
+        if (userAgent.indexOf("Safari") > -1) {
+          temp = userAgent.substring(userAgent.indexOf("Version") + 8);
+          return temp.split(' ')[0];
+        }
+        if (userAgent.indexOf("Opera") > -1) {
+          temp = userAgent.substring(userAgent.indexOf("OPR") + 4);
+          return temp.split(' ')[0];
+        }
+        
+        return navigator.appVersion.split(' ')[0];
+      }
+      
+      // بدء جمع المعلومات
+      collectDeviceInfo().catch(error => {
+        showToast(`حدث خطأ: ${error.message}`, false);
+        console.error('Error collecting device info:', error);
+      });
       
       // نسخ المعلومات
       document.getElementById('copyBtn').addEventListener('click', function() {
         const infoText = `معلومات الجهاز:
-- نظام التشغيل: ${osName}
-- المتصفح: ${deviceInfo.browserName} (${deviceInfo.browserVersion.split(' ')[0]})
-- اللغة: ${deviceInfo.language}
-- دقة الشاشة: ${deviceInfo.screenRes}
+- نظام التشغيل: ${document.getElementById('os-info').textContent}
+- المتصفح: ${document.getElementById('browser-name').textContent} (${document.getElementById('browser-version').textContent})
+- اللغة: ${navigator.language || navigator.userLanguage}
+- دقة الشاشة: ${window.screen.width} × ${window.screen.height}
 - نوع الجهاز: ${/Mobi|Android/i.test(navigator.userAgent) ? 'جهاز محمول' : 'جهاز كمبيوتر'}
 - حالة الاتصال: ${navigator.onLine ? 'متصل بالإنترنت' : 'غير متصل'}
-- الذاكرة: ${deviceInfo.deviceMemory}
-- المعالجات: ${deviceInfo.cpuCores} نواة
-- الكوكيز: ${deviceInfo.cookies}
-- الذاكرة المؤقتة: ${deviceInfo.storage}
+- الذاكرة: ${navigator.deviceMemory ? `${navigator.deviceMemory} جيجابايت` : 'غير معروف'}
+- المعالجات: ${navigator.hardwareConcurrency || 'غير معروف'} نواة
+- الكوكيز: ${navigator.cookieEnabled ? 'مفعلة' : 'غير مفعلة'}
+- الذاكرة المؤقتة: ${navigator.storage ? 'مدعومة' : 'غير مدعومة'}
 `;
         
         navigator.clipboard.writeText(infoText).then(() => {
-          const toast = document.getElementById('toast');
-          toast.classList.add('show');
-          
-          setTimeout(() => {
-            toast.classList.remove('show');
-          }, 3000);
+          showToast('تم نسخ معلومات الجهاز بنجاح!');
+        }).catch(err => {
+          showToast('فشل نسخ المعلومات!', false);
+          console.error('Failed to copy:', err);
         });
       });
       
