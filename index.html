@@ -438,13 +438,13 @@
         </button>
       </div>
 
-      <!-- بطاقة المستشعرات الجديدة -->
+      <!-- بطاقة المستشعرات -->
       <div class="card">
         <div class="card-header"><i class="fas fa-satellite-dish"></i> المستشعرات</div>
         <div class="sensor-list" id="sensorList">
           <!-- تُملأ عبر الجافاسكريبت -->
         </div>
-        <small style="color:var(--text-muted); display:block; margin-top:10px;">✅ = مدعوم | ⚠️ = غير مدعوم</small>
+        <small style="color:var(--text-muted); display:block; margin-top:10px;" id="sensorNote">✅ = مدعوم | ⚠️ = غير مدعوم</small>
       </div>
 
     </div>
@@ -664,6 +664,7 @@
       }
     }
 
+    // === كشف المستشعرات بدقة (محاولة إنشاء الكائن فعلياً) ===
     function detectSensors() {
       const sensors = [
         { name: 'مقياس التسارع', key: 'Accelerometer' },
@@ -677,13 +678,37 @@
       
       const list = document.getElementById('sensorList');
       list.innerHTML = '';
+      let anySupported = false;
+      
       sensors.forEach(sensor => {
-        const supported = (sensor.key in window);
+        let supported = false;
+        try {
+          // محاولة إنشاء المستشعر (لن يبدأ الاستشعار فعلياً)
+          const SensorClass = window[sensor.key];
+          if (SensorClass && typeof SensorClass === 'function') {
+            new SensorClass();
+            supported = true;
+          }
+        } catch (e) {
+          // ReferenceError أو SecurityError أو أي خطأ يعني غير مدعوم
+          supported = false;
+        }
+        
+        if (supported) anySupported = true;
+        
         const item = document.createElement('div');
         item.className = 'sensor-item';
         item.innerHTML = `${supported ? '✅' : '⚠️'} ${sensor.name}`;
         list.appendChild(item);
       });
+
+      // إذا الكل غير مدعوم نعطي رسالة توعوية
+      const note = document.getElementById('sensorNote');
+      if (!anySupported && window.location.protocol !== 'https:') {
+        note.innerHTML = '⚠️ يلزم تشغيل الموقع عبر <b>HTTPS</b> لتفعيل دعم المستشعرات في المتصفح.';
+      } else {
+        note.innerHTML = '✅ = مدعوم | ⚠️ = غير مدعوم';
+      }
     }
 
     // اللمس المتعدد
